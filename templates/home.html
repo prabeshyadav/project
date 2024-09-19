@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Form</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="form-container">
+        <form action="{% url 'home' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="username" placeholder="Enter Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="father_name">Father's Name:</label>
+                <input type="text" id="father_name" name="father_name" placeholder="Enter Father's Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" placeholder="Enter Address" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" placeholder="Enter your number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="created_at" required>
+            </div>
+
+            <button type="submit" >Submit</button>
+        </form>
+    </div>
+</body>
+</html>

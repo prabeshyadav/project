@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Invoice</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/storage.css' %}">
+</head>
+<body>
+    <div class="table-container">
+        <h2>Invoice for {{ customer.username }}</h2>
+        <p>Address: {{ customer.address }}</p>
+        <p>Phone: {{ customer.phone }}</p>
+        <p>Date: {{ customer.created_at }}</p>
+
+        <h3>Items</h3>
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Medicine</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Paid Amount</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.medicine }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.paid_amount }}</td>
+                    <td>{{ item.remaining_amount|floatformat:2 }}</td> <!-- Balance for this item -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Total Summary</h3>
+        <p>Total Amount: {{ total_amount }}</p>
+        <p>Total Paid: {{ total_paid_amount }}</p>
+        <p>Remaining Balance: {{ remaining_amount }}</p>
+    </div>
+</body>
+</html>

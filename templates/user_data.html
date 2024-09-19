@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Input Table with User Info</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
+</head>
+<body>
+
+<div class="form-container">
+    <!-- User Information Form -->
+    <form method="POST" action='{% url "user_data" %}'>
+        {% csrf_token %}
+        
+        <!-- Display any form errors -->
+        {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, error_list in errors.items %}
+                    <li>{{ field }}: {{ error_list|join:", " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- User Selection Form -->
+        <div class="form-group">
+            <label for="customer_name">Select Customer:</label>
+            <select name="customer_name" id="customer_name" required>
+                <option value="">Select Customer</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <!-- Dynamic Table -->
+        <table id="inputTable">
+            <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>Medicine</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td>1</td>
+                    <td><input type="text" name="medicine[]" required></td>
+                    <td><input type="number" name="quantity[]" oninput="calculateTotal(this)" required></td>
+                    <td><input type="number" step="0.01" name="price[]" oninput="calculateTotal(this)" required></td>
+                    <td><input type="number" name="total[]" readonly></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><strong>Total Amount</strong></td>
+                    <td><input type="number" id="totalAmount" readonly></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><strong>Paid Amount</strong></td>
+                    <td><input type="number" id="paidAmount" name='paid_amount[]' oninput="updateBalance()"></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><strong>Balance</strong></td>
+                    <td><input type="number" id="balanceAmount" readonly></td>
+                </tr>
+            </tfoot>
+        </table>
+    
+        <!-- Add row button and submit -->
+        <button id="addRow" type="button">Add Row</button>
+        <button type="submit" class="btn-submit">Save Order</button>
+    </form>
+</div>
+
+<!-- Script for handling dynamic rows and calculations -->
+<script src="{% static 'js/main.js' %}"></script>
+<script>
+    let sn = 1;
+    
+    document.getElementById('addRow').addEventListener('click', function () {
+        const tableBody = document.getElementById('tableBody');
+        const rowCount = tableBody.rows.length;
+        const newRow = tableBody.insertRow(rowCount);
+
+        newRow.innerHTML = `
+            <td>${rowCount + 1}</td>
+            <td><input type="text" name="medicine[]" required></td>
+            <td><input type="number" name="quantity[]" oninput="calculateTotal(this)" required></td>
+            <td><input type="number" step="0.01" name="price[]" oninput="calculateTotal(this)" required></td>
+            <td><input type="number" name="total[]" readonly></td>
+        `;
+    });
+
+    function calculateTotal(inputElement) {
+        const row = inputElement.closest('tr');
+        const quantity = row.querySelector('input[name="quantity[]"]').value || 0;
+        const price = row.querySelector('input[name="price[]"]').value || 0;
+        const total = row.querySelector('input[name="total[]"]');
+
+        total.value = (quantity * price).toFixed(2);
+
+        updateTotalAmount();
+    }
+
+    function updateTotalAmount() {
+        const totalInputs = document.querySelectorAll('input[name="total[]"]');
+        let totalSum = 0;
+
+        totalInputs.forEach(input => {
+            totalSum += parseFloat(input.value) || 0;
+        });
+
+        document.getElementById('totalAmount').value = totalSum.toFixed(2);
+        updateBalance();
+    }
+
+    function updateBalance() {
+        const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+        const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+        const balance = totalAmount - paidAmount;
+
+        document.getElementById('balanceAmount').value = balance.toFixed(2);
+    }
+</script>
+</body>
+</html>
