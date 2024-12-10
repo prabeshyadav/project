@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Form</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
 </head>
 <body>
     <div class="form-container">
@@ -19,6 +19,16 @@
             <div class="form-group">
                 <label for="father_name">Father's Name:</label>
                 <input type="text" id="father_name" name="father_name" placeholder="Enter Father's Name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="grandparent_name">Grandfather's Name:</label>
+                <input type="text" id="grandparent_name" name="grand_parent" placeholder="Enter Grandfather's Name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="minor">Minor:</label>
+                <input type="text" id="minor" name="minor" placeholder="Enter Minor's Name" required>
             </div>
 
             <div class="form-group">
@@ -36,7 +46,7 @@
                 <input type="date" id="date" name="created_at" required>
             </div>
 
-            <button type="submit" >Submit</button>
+            <button type="submit">Submit</button>
         </form>
     </div>
 </body>

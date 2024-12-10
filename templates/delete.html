@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Data</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/storage.css' %}">
-    <style>
+    {% comment %} <style>
         /* Your existing styles */
         /* Container for the search input */
         .search-container {
@@ -119,7 +119,7 @@
             background-color: #0056b3;
         }
 
-    </style>
+    </style> {% endcomment %}
 </head>
 <body>
 <div class="table-container">
@@ -127,9 +127,13 @@
 
     <!-- Search Field Container aligned to the right -->
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search by name, phone, or address" onkeyup="filterTable()">
+        <form method="get" action="">
+            <input type="text" id="searchInput" name="search" value="{{ search }}" placeholder="Search by name, phone, or address">
+            <button type="submit" class="add-btn" style="padding: 6px 10px;">Search</button>
+        </form>
     </div>
-
+    
+    
     <table class="customer-table">
         <thead>
             <tr>
@@ -137,6 +141,8 @@
                 <th>Name</th>
                 <th>Phone</th>
                 <th>Father's Name</th>
+                <th>Grandparent Name</th>
+                <th>Witness</th>
                 <th>Address</th>
                 <th>Date</th>
                 <th>Balance</th>
@@ -150,43 +156,54 @@
                 <td>{{ user.username }}</td>
                 <td>{{ user.phone }}</td>
                 <td>{{ user.father_name }}</td>
+                <td>{{ user.grand_parent }}</td>
+                <td>{{ user.minor }}</td>
                 <td>{{ user.address }}</td>
                 <td>{{ user.created_at|date:"Y-m-d" }}</td>
                 <td>{{ user.remaining_amount }}</td>
                 <td>
-                    <form action="{% url 'delete_customer' id=user.id %}" method="POST" onsubmit="return confirmDeletion();">
+                    <form action="{% url 'delete_customer' user.id %}" method="POST" onsubmit="return confirmDeletion();">
                         {% csrf_token %}
-                        <button type="submit" class="delete-btn">Delete</button>
+                        <button 
+                            type="submit" 
+                            class="delete-btn" 
+                            onclick="event.stopPropagation();">Delete</button>
                     </form>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
+        
     </table>
-
+    
     <!-- Pagination Controls -->
     <div class="pagination">
         <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; First</a>
-                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
             {% endif %}
-
             <span class="current">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
             </span>
-
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Last &raquo;</a>
             {% endif %}
         </span>
     </div>
+    
 
     <!-- Add New Customer Button -->
-    <div style="text-align: right; margin-top: 20px;">
-        <button onclick="window.location.href='{% url 'home' %}'" class="add-btn">Add New Customer</button>
-    </div>
+<!-- Buttons Container -->
+<div style="display: flex; justify-content: space-between; margin-top: 20px;">
+    <!-- New Button Aligned to the Left -->
+    <button onclick="window.location.href='{% url 'user_profile' %}'" class="add-btn">Old Customer</button>
+
+    <!-- Add New Customer Button Aligned to the Right -->
+    <button onclick="window.location.href='{% url 'home' %}'" class="add-btn">+ Add New Customer</button>
+</div>
+
 </div>
 
 <script>
@@ -211,12 +228,15 @@
         const filter = input.value.toLowerCase();
         const tableBody = document.getElementById('customerTableBody');
         const rows = tableBody.getElementsByTagName('tr');
-
+    
+        // Update URL with search query
+        window.location.search = '?search=' + filter;
+    
         for (let i = 0; i < rows.length; i++) {
             const name = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
             const phone = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
-            const address = rows[i].getElementsByTagName('td')[4].textContent.toLowerCase();
-            
+            const address = rows[i].getElementsByTagName('td')[6].textContent.toLowerCase();
+    
             if (name.indexOf(filter) > -1 || phone.indexOf(filter) > -1 || address.indexOf(filter) > -1) {
                 rows[i].style.display = '';
             } else {
@@ -224,6 +244,16 @@
             }
         }
     }
+    document.querySelector('#customerTableBody').addEventListener('click', (event) => {
+        const row = event.target.closest('tr');
+        if (row && !event.target.closest('form')) {
+            const url = row.getAttribute('data-url');
+            if (url) {
+                window.location.href = url;
+            }
+        }
+    });
+    
 
     // Confirmation for deletion
     function confirmDeletion() {

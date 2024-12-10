@@ -6,18 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Invoice</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/storage.css' %}">
+    <style>
+        .add-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .add-btn:hover {
+            background-color: #0056b3;
+        }
+        
+    </style>
 </head>
 <body>
     <div class="table-container">
         <h2>Invoice for {{ customer.username }}</h2>
-        <p>Address: {{ customer.address }}</p>
-        <p>Phone: {{ customer.phone }}</p>
-        <p>Date: {{ customer.created_at }}</p>
+        <p><strong>Address:</strong> {{ customer.address }}</p>
+        <p><strong>Phone:</strong> {{ customer.phone }}</p>
+        <p><strong>Date:</strong> {{ customer.created_at }}</p>
 
         <h3>Items</h3>
         <table class="customer-table">
             <thead>
                 <tr>
+                    <th>Date</th>
                     <th>Medicine</th>
                     <th>Quantity</th>
                     <th>Price</th>
@@ -29,21 +45,29 @@
             <tbody>
                 {% for item in items %}
                 <tr>
+                    <td>{{ item.date }}</td>
                     <td>{{ item.medicine }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.price }}</td>
                     <td>{{ item.amount }}</td>
                     <td>{{ item.paid_amount }}</td>
-                    <td>{{ item.remaining_amount|floatformat:2 }}</td> <!-- Balance for this item -->
+                    <td>{{ item.remaining_amount|floatformat:2 }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+            <!-- Add New Customer Button Aligned to the Right -->
+            <button onclick="window.location.href='{% url 'home' %}'" class="add-btn">+ Add New Customer</button>
+        </div>
+        
 
         <h3>Total Summary</h3>
-        <p>Total Amount: {{ total_amount }}</p>
-        <p>Total Paid: {{ total_paid_amount }}</p>
-        <p>Remaining Balance: {{ remaining_amount }}</p>
+        <div class="total-summary">
+            <p>Total Amount: <span>{{ total_amount }}</span></p>
+            <p>Total Paid: <span>{{ total_paid_amount }}</span></p>
+            <p>Remaining Balance: <span>{{ remaining_amount }}</span></p>
+        </div>
     </div>
 </body>
 </html>

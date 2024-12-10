@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Data</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/storage.css' %}">
+</head>
+<body>
+<div class="table-container">
+    <h2>Customer Data</h2>
+
+    <!-- Search Field Container -->
+    <div class="search-container">
+        <form method="get" action="">
+            <input 
+                type="text" 
+                id="searchInput" 
+                name="search" 
+                value="{{ search }}" 
+                placeholder="Search by name, phone, or address"
+            >
+            <button type="submit" class="add-btn" style="padding: 6px 10px;">Search</button>
+        </form>
+    </div>
+
+    <!-- Data Table -->
+    <table class="customer-table">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Father's Name</th>
+                <th>Grandparent Name</th>
+                <th>Witness</th>
+                <th>Address</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in page_obj %}
+            <tr class="row-bg" onclick="redirectToDetails('{% if user.id %}{% url 'user_data' user.id %}{% endif %}')">                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.father_name }}</td>
+                <td>{{ user.grand_parent }}</td>
+                <td>{{ user.minor }}</td>
+                <td>{{ user.address }}</td>
+                <td>{{ user.created_at|date:"Y-m-d" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No customers found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if search %}&search={{ search }}{% endif %}">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">Previous</a>
+        {% endif %}
+        <span>
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}">Last &raquo;</a>
+        {% endif %}
+    </div>
+    
+
+<!-- Redirect Function -->
+<script>
+    function redirectToDetails(url) {
+        window.location.href = url;
+    }
+</script>
+</body>
+</html>

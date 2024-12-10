@@ -4,14 +4,179 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Input Table with User Info</title>
+    <title>create list with User Info</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
+    <style>
+        /* General reset */
+        /* General reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Container styling */
+        .form-container {
+            margin: 0 auto;
+            width: 80%;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Heading styling */
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        table th {
+            background-color: #28a745;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        table tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+        
+        table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+        
+        table input[type="text"],
+        table input[type="number"],
+        table input[type="date"] {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        /* Read-only inputs */
+        table input[readonly] {
+            background-color: #f4f4f4;
+            color: #555;
+            border: none;
+            font-weight: bold;
+        }
+        
+        /* Add row button styling */
+        #addRow {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        #addRow:hover {
+            background-color: #218838;
+        }
+        
+        /* Submit button styling */
+        button[type="submit"] {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+        
+        /* Error message styling */
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .alert ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .alert ul li {
+            margin: 5px 0;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 18px;
+            }
+        
+            table th,
+            table td {
+                font-size: 10px;
+                padding: 5px;
+            }
+        
+            #addRow,
+            button[type="submit"] {
+                font-size: 10px;
+            }
+        
+            input[type="text"],
+            input[type="number"],
+            input[type="date"] {
+                font-size: 12px;
+                padding: 6px;
+            }
+        }
+
+    </style>
 </head>
 <body>
 
 <div class="form-container">
     <!-- User Information Form -->
-    <form method="POST" action='{% url "user_data" %}'>
+    <form method="POST" action='{% url "user_data" id=user.id %}'>
         {% csrf_token %}
         
         <!-- Display any form errors -->
@@ -24,20 +189,25 @@
             </ul>
         </div>
         {% endif %}
+
+        <h2>Invoice for {{ customer.username}}</h2>
+
         
         <!-- User Selection Form -->
-        <div class="form-group">
+        {% comment %} <div class="form-group">
             <label for="customer_name">Select Customer:</label>
             <select name="customer_name" id="customer_name" required>
                 <option value="">Select Customer</option>
                 {% for user in users %}
                     <option value="{{ user.id }}">{{ user.username }}</option>
-                {% endfor %}
+                {% endfor %} {% endcomment %}
             </select>
         </div>
     
         <!-- Dynamic Table -->
+        
         <table id="inputTable">
+
             <thead>
                 <tr>
                     <th>SN</th>
@@ -45,6 +215,7 @@
                     <th>Quantity</th>
                     <th>Price</th>
                     <th>Total</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -54,6 +225,7 @@
                     <td><input type="number" name="quantity[]" oninput="calculateTotal(this)" required></td>
                     <td><input type="number" step="0.01" name="price[]" oninput="calculateTotal(this)" required></td>
                     <td><input type="number" name="total[]" readonly></td>
+                    <td><input type="date" name="date[]" placeholder="Date"></td>
                 </tr>
             </tbody>
             <tfoot>

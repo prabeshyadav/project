@@ -9,6 +9,9 @@ class UserInfo(models.Model):
     address = models.CharField(max_length=255)
     phone = models.CharField(max_length=15)
     created_at = models.DateField()
+    grand_parent=models.CharField(max_length=50)
+    minor=models.CharField(max_length=50)
+    
 
     def __str__(self):
         return self.username
@@ -40,7 +43,8 @@ class Item(models.Model):
     quantity = models.IntegerField()
     price = models.IntegerField()
     paid_amount = models.IntegerField(default=0)
-    customer_name=models.ForeignKey(UserInfo, on_delete=models.CASCADE,null=True)
+    customer_name=models.ForeignKey(UserInfo, on_delete=models.CASCADE,null=True,related_name='items')
+    date = models.DateField(blank=True,null=True)
     
  
     @property
