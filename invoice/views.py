@@ -13,7 +13,7 @@ def home(request):
         if form.is_valid():
             form.save()  # Save the form data to the database
             print('Data saved:', form.cleaned_data)  # Debugging: print the cleaned data
-            return redirect('user_data')  # Redirect after successful form submission
+            return redirect('user_profile')  # Redirect after successful form submission
         else:
             print('Form errors:', form.errors)  # Debugging: print the form errors
     else:
