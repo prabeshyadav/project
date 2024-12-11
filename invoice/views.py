@@ -112,7 +112,7 @@ def customer_data(request):
         )
 
     # Initialize the Paginator
-    paginator = Paginator(users, 5)  # Paginate with 5 users per page
+    paginator = Paginator(users, 10)  # Paginate with 5 users per page
 
     # Get the page number from the request
     page_number = request.GET.get('page', 1)  # Default to page 1 if not provided
@@ -188,7 +188,7 @@ def user_profile(request,id=id):
         )
 
     # Paginate with 5 profiles per page
-    paginator = Paginator(profiles, 5)
+    paginator = Paginator(profiles, 10)
 
     # Get the page number from the request, default to 1
     page_number = request.GET.get('page', 1)
