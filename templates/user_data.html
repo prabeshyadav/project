@@ -23,6 +23,16 @@
             margin: 0 auto;
             width: 80%;
             padding: 20px;
+            display:none;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #inputTable {
+            width: 80%;
+            margin: 0  auto;
+            border-collapse: collapse;
+            margin-top: 40px;
+            padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -176,10 +186,10 @@
 
 <div class="form-container">
     <!-- User Information Form -->
-    <form method="POST" action='{% url "user_data" id=user.id %}'>
+    <form method="POST" action="{% url 'user_data' id=customer.id %}">
         {% csrf_token %}
         
-        <!-- Display any form errors -->
+         <!-- Display any form errors -->
         {% if errors %}
         <div class="alert alert-danger">
             <ul>
@@ -187,26 +197,17 @@
                     <li>{{ field }}: {{ error_list|join:", " }}</li>
                 {% endfor %}
             </ul>
+            {% endif %}
         </div>
-        {% endif %}
-
-        <h2>Invoice for {{ customer.username}}</h2>
-
+         
         
-        <!-- User Selection Form -->
-        {% comment %} <div class="form-group">
-            <label for="customer_name">Select Customer:</label>
-            <select name="customer_name" id="customer_name" required>
-                <option value="">Select Customer</option>
-                {% for user in users %}
-                    <option value="{{ user.id }}">{{ user.username }}</option>
-                {% endfor %} {% endcomment %}
-            </select>
-        </div>
-    
+        
+ 
+        
         <!-- Dynamic Table -->
-        
-        <table id="inputTable">
+        <div id="inputTable">
+        <table >
+            <h2>Invoice for {{ customer.username}}</h2>
 
             <thead>
                 <tr>
@@ -243,10 +244,11 @@
                 </tr>
             </tfoot>
         </table>
-    
-        <!-- Add row button and submit -->
         <button id="addRow" type="button">Add Row</button>
         <button type="submit" class="btn-submit">Save Order</button>
+        </div>
+    
+        <!-- Add row button and submit -->
     </form>
 </div>
 
