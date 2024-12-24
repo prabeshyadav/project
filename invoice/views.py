@@ -1,76 +1,88 @@
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
-from .models import UserInfo,Item
-from .forms import UserInfoForm,ItemForm
+from .models import UserInfo, Item
+from .forms import UserInfoForm, ItemForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
+# Custom login view
+def custom_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')  # Redirect to the homepage after successful login
+            else:
+                return HttpResponse("Invalid login credentials.")
+        else:
+            return HttpResponse("Form is not valid.")
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
 
+@login_required
+def logoutUser(request):
+    logout(request)
+    messages.info(request, "Logged out successfully!")
+    return redirect("login")
 
+@login_required
 def home(request):
     if request.method == 'POST':
         form = UserInfoForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the form data to the database
-            print('Data saved:', form.cleaned_data)  # Debugging: print the cleaned data
-            return redirect('user_profile')  # Redirect after successful form submission
+            form.save()
+            messages.success(request, "Form submitted successfully!")
+            return redirect('user_profile')
         else:
-            print('Form errors:', form.errors)  # Debugging: print the form errors
+            messages.error(request, "Please correct the errors below.")
     else:
-        form = UserInfoForm()  # Empty form for GET request
+        form = UserInfoForm()
 
     return render(request, 'home.html', {'form': form})
 
-
-
-
-
-
-from django.utils import timezone
-
-from django.utils import timezone
-
+@login_required
 def user_data(request, id=None):
     customer = None
-
-    # Validate customer ID from the URL parameter
     if id:
         try:
             customer = UserInfo.objects.get(id=id)
-            item_date=Item.objects.filter(customer_name=customer)
+            item_date = Item.objects.filter(customer_name=customer)
         except UserInfo.DoesNotExist:
             messages.error(request, "Customer not found.")
-            return redirect('user_data')  # Or redirect to a safe page, like the customer list
+            return redirect('user_data')
     else:
         messages.error(request, "Customer ID is required.")
         return redirect('user_data')
 
-    fm = ItemForm()  # Initialize 'fm' with an empty form
+    fm = ItemForm()
 
     if request.method == 'POST':
-        print("POST data:", request.POST)  # Print all POST data for debugging
-
-        # Process dynamic fields
         medicines = request.POST.getlist('medicine[]')
         quantities = request.POST.getlist('quantity[]')
         prices = request.POST.getlist('price[]')
         paid_amounts = request.POST.getlist('paid_amount[]')
-        dates = request.POST.getlist('date[]')  # Retrieve date field
+        dates = request.POST.getlist('date[]')
 
-        # Ensure lists have the same length by padding if necessary
         max_length = max(len(medicines), len(quantities), len(prices))
         paid_amounts += ['0'] * (max_length - len(paid_amounts))
-        dates += [None] * (max_length - len(dates))  # Default missing dates to None
+        dates += [None] * (max_length - len(dates))
 
-        # Check that lists are not empty and have the same length
         if not medicines or len(medicines) != max_length:
-            messages.error(request, "All fields (medicines, quantities, and prices) must be filled.")
+            messages.error(request, "All fields must be filled.")
             return redirect('user_data')
 
-        # Create Item objects
         for i in range(max_length):
-            total = float(quantities[i]) * float(prices[i])  # Calculate total
-            item_date = dates[i] if dates[i] else None  # Use date or set to None if empty
+            total = float(quantities[i]) * float(prices[i])
+            item_date = dates[i] if dates[i] else None
 
             Item.objects.create(
                 medicine=medicines[i],
@@ -78,55 +90,38 @@ def user_data(request, id=None):
                 price=prices[i],
                 paid_amount=paid_amounts[i],
                 customer_name=customer,
-                date=item_date  # Save the date
+                date=item_date
             )
 
         messages.success(request, "Successfully added items for the customer.")
         return redirect('/')
 
-    # For GET requests, render the empty form
     users = UserInfo.objects.all()
     context = {'forms': fm, 'users': users, 'customer': customer}
     return render(request, 'user_data.html', context)
 
-
-
-
-
-
-
-
-
+@login_required
 def customer_data(request):
-    # Retrieve all users initially
     users = UserInfo.objects.all().order_by('-created_at')
-
-    # Handle search functionality
-    search_query = request.GET.get('search', '')  # Get search query from URL
+    search_query = request.GET.get('search', '')
     if search_query:
-        # Filter users based on the search term (username, phone, or address)
         users = users.filter(
             Q(username__icontains=search_query) |
             Q(phone__icontains=search_query) |
             Q(address__icontains=search_query)
         )
 
-    # Initialize the Paginator
-    paginator = Paginator(users, 10)  # Paginate with 5 users per page
-
-    # Get the page number from the request
-    page_number = request.GET.get('page', 1)  # Default to page 1 if not provided
+    paginator = Paginator(users, 10)
+    page_number = request.GET.get('page', 1)
 
     try:
-        # Get the page object for the current page number
         page_obj = paginator.page(page_number)
-    except Exception as e:
-        # If page is out of range or invalid, show the first page
+    except Exception:
         page_obj = paginator.page(1)
 
-    # Render the template and pass the page object and search term
     return render(request, 'delete.html', {'page_obj': page_obj, 'search': search_query})
 
+@login_required
 def invoice(request, customer_id):
     customer = UserInfo.objects.get(id=customer_id)
     items = Item.objects.filter(customer_name=customer)
@@ -146,63 +141,40 @@ def invoice(request, customer_id):
         'remaining_amount': remaining_amount
     })
 
-
-
-
-
-# def update_paid_amount(request, item_id):
-#     item = Item.objects.get(id=item_id)
-#     paid_amount = request.POST.get('paid_amount')
-#     item.paid_amount = paid_amount
-#     item.save()
-#     return redirect('invoice', customer_id=item.customer_name.id)
-
+@login_required
 def delete_item(request, item_id):
     item = Item.objects.get(id=item_id)
     customer_id = item.customer_name.id
     item.delete()
     return redirect('invoice', customer_id=customer_id)
 
+@login_required
 def delete_customer(request, id):
-
-
     customer = get_object_or_404(UserInfo, id=id)
     customer.delete()
     messages.success(request, "Customer deleted successfully.")
     return redirect('/')
 
-
-
-def user_profile(request,id=id):
-    # Retrieve all user profiles, ordered by creation date
+@login_required
+def user_profile(request):
     profiles = UserInfo.objects.all().order_by('created_at')
-
-    # Handle search functionality
-    search_query = request.GET.get('search', '')  # Get search query from URL
+    search_query = request.GET.get('search', '')
     if search_query:
-        # Filter profiles based on the search term (username, phone, or address)
         profiles = profiles.filter(
             Q(username__icontains=search_query) |
             Q(phone__icontains=search_query) |
             Q(address__icontains=search_query)
         )
 
-    # Paginate with 5 profiles per page
     paginator = Paginator(profiles, 10)
-
-    # Get the page number from the request, default to 1
     page_number = request.GET.get('page', 1)
 
     try:
-        # Get the page object for the current page number
         page_obj = paginator.page(page_number)
     except Exception:
-        # If the page number is out of range or invalid, show the first page
         page_obj = paginator.page(1)
 
-    # Pass profiles and pagination info to the template
     return render(request, 'user_profile.html', {
-        'page_obj': page_obj,  # Paginated profiles
-        'search': search_query,  # Retain the search query in the template
+        'page_obj': page_obj,
+        'search': search_query,
     })
-

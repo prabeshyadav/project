@@ -207,16 +207,19 @@
         <!-- Dynamic Table -->
         <div id="inputTable">
         <table >
-            <h2>Invoice for {{ customer.username}}</h2>
+            <h2>खत वाला
+                {{ customer.username}}</h2>
 
             <thead>
                 <tr>
                     <th>SN</th>
-                    <th>Medicine</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Date</th>
+                    <th>नाम</th>
+                    <th>दर
+                    </th>
+                    <th>मूल्य
+                    </th>
+                    <th>कुल</th>
+                    <th>मिति</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -231,15 +234,15 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4"><strong>Total Amount</strong></td>
+                    <td colspan="4"><strong>कुल</strong></td>
                     <td><input type="number" id="totalAmount" readonly></td>
                 </tr>
                 <tr>
-                    <td colspan="4"><strong>Paid Amount</strong></td>
+                    <td colspan="4"><strong>देको रकम</strong></td>
                     <td><input type="number" id="paidAmount" name='paid_amount[]' oninput="updateBalance()"></td>
                 </tr>
                 <tr>
-                    <td colspan="4"><strong>Balance</strong></td>
+                    <td colspan="4"><strong>बाकी रकम</strong></td>
                     <td><input type="number" id="balanceAmount" readonly></td>
                 </tr>
             </tfoot>

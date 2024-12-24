@@ -5,49 +5,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/datepicker.css' %}">
 </head>
 <body>
-    <div class="form-container">
-        <form action="{% url 'home' %}" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="username" placeholder="Enter Name" required>
-            </div>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Customer Form</h1>
+        <div class="card p-4 shadow-sm">
+            <form action="{% url 'home' %}" method="POST">
+                {% csrf_token %}
+                
+                {% if messages %}
+                    <div class="alert alert-info">
+                        <ul class="mb-0">
+                            {% for message in messages %}
+                                <li class="{{ message.tags }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <!-- Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">नाम:</label>
+                    <input type="text" id="name" name="username" class="form-control" placeholder="Enter Name" required>
+                </div>
 
-            <div class="form-group">
-                <label for="father_name">Father's Name:</label>
-                <input type="text" id="father_name" name="father_name" placeholder="Enter Father's Name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="grandparent_name">Grandfather's Name:</label>
-                <input type="text" id="grandparent_name" name="grand_parent" placeholder="Enter Grandfather's Name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="minor">Witness:</label>
-                <input type="text" id="minor" name="minor" placeholder="Enter Minor's Name" required>
-            </div>
+                <!-- Father's Name -->
+                <div class="mb-3">
+                    <label for="father_name" class="form-label">बुबाको नाम:</label>
+                    <input type="text" id="father_name" name="father_name" class="form-control" placeholder="Enter Father's Name" required>
+                </div>
 
-            <div class="form-group">
-                <label for="address">Address:</label>
-                <textarea id="address" name="address" placeholder="Enter Address" required></textarea>
-            </div>
+                <!-- Grandfather's Name -->
+                <div class="mb-3">
+                    <label for="grandparent_name" class="form-label">हजुरबुबाको नाम:</label>
+                    <input type="text" id="grandparent_name" name="grand_parent" class="form-control" placeholder="Enter Grandfather's Name" required>
+                </div>
 
-            <div class="form-group">
-                <label for="phone">Phone:</label>
-                <input type="text" id="phone" name="phone" placeholder="Enter your number" required>
-            </div>
+                <!-- Witness -->
+                <div class="mb-3">
+                    <label for="minor" class="form-label">साक्षी:</label>
+                    <input type="text" id="minor" name="minor" class="form-control" placeholder="Enter Minor's Name">
+                </div>
 
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="created_at" required>
-            </div>
+                <!-- Address -->
+                <div class="mb-3">
+                    <label for="address" class="form-label">ठेगाना:</label>
+                    <textarea id="address" name="address" class="form-control" placeholder="Enter Address" rows="3" required></textarea>
+                </div>
 
-            <button type="submit">Submit</button>
-        </form>
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label for="phone" class="form-label">फोन:</label>
+                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your number" required>
+                </div>
+
+                <!-- Date -->
+                <div class="mb-3">
+                    <label for="date" class="form-label">मिति:</label>
+                    <input type="date" id="date" name="created_at" class="form-control" value="{{ current_date }}" required>
+                </div>
+
+                <!-- Register Number -->
+                <div class="mb-3">
+                    <label for="register" class="form-label">रेगिस्तेर नम्बर:</label>
+                    <input type="text" id="register" name="registered" class="form-control" placeholder="Enter Register Number">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">पेश गर्नुहोस्</button>
+            </form>
+        </div>
     </div>
+    
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function transliterateText(inputField) {
+            const output = IndicTransliteration.toIndic(inputField.value, 'ne');
+            inputField.value = output;
+        }
+    </script>
 </body>
 </html>

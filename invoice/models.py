@@ -10,6 +10,7 @@ class UserInfo(models.Model):
     phone = models.CharField(max_length=15)
     created_at = models.DateField()
     grand_parent=models.CharField(max_length=50)
+    registered=models.CharField(max_length=50,blank=True)
     minor=models.CharField(max_length=50)
     
 

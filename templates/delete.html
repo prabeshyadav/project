@@ -138,14 +138,14 @@
         <thead>
             <tr>
                 <th>SN</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Father's Name</th>
-                <th>Grandparent Name</th>
-                <th>Witness</th>
-                <th>Address</th>
-                <th>Date</th>
-                <th>Balance</th>
+                <th>नाम</th>
+                <th>बुबाको नाम</th>
+                <th>हजुरबुबाको नाम</th>
+                <th>साक्षी</th>
+                <th>ठेगाना</th>
+                <th>फोन</th>
+                <th>मिति</th>
+                <th>बाकी रकम</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -154,11 +154,11 @@
             <tr class="row-bg" {% if user.id %} onclick="redirectToDetails('{% url 'item' user.id %}')" {% endif %}>
                 <td class="sn-cell"></td>
                 <td>{{ user.username }}</td>
-                <td>{{ user.phone }}</td>
                 <td>{{ user.father_name }}</td>
                 <td>{{ user.grand_parent }}</td>
                 <td>{{ user.minor }}</td>
                 <td>{{ user.address }}</td>
+                <td>{{ user.phone }}</td>
                 <td>{{ user.created_at|date:"Y-m-d" }}</td>
                 <td>{{ user.remaining_amount }}</td>
                 <td>
@@ -180,15 +180,19 @@
     <div class="pagination">
         <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo; First</a>
-                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+                <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo; पहिलो
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">अघिल्लो
+                </a>
             {% endif %}
             <span class="current">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
             </span>
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Last &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">अर्को
+                    t</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">अन्तिम
+                    &raquo;</a>
             {% endif %}
         </span>
     </div>
@@ -198,10 +202,11 @@
 <!-- Buttons Container -->
 <div style="display: flex; justify-content: space-between; margin-top: 20px;">
     <!-- New Button Aligned to the Left -->
-    <button onclick="window.location.href='{% url 'user_profile' %}'" class="add-btn">Old Customer</button>
+    <button onclick="window.location.href='{% url 'user_profile' %}'" class="add-btn">पुरानो ग्राहक
+    </button>
 
     <!-- Add New Customer Button Aligned to the Right -->
-    <button onclick="window.location.href='{% url 'home' %}'" class="add-btn">+ Add New Customer</button>
+    <button onclick="window.location.href='{% url 'home' %}'" class="add-btn">+नयाँ ग्राहक</button>
 </div>
 
 </div>

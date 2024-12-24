@@ -24,28 +24,28 @@
 </head>
 <body>
     <div class="table-container">
-        <h2>Invoice for {{ customer.username }}</h2>
-        <p><strong>Address:</strong> {{ customer.address }}</p>
-        <p><strong>Phone:</strong> {{ customer.phone }}</p>
-        <p><strong>Date:</strong> {{ customer.created_at }}</p>
+        <h2>खाता मालिक {{ customer.username }}</h2>
+        <p><strong>ठेगाना:</strong> {{ customer.address }}</p>
+        <p><strong>फोन:</strong> {{ customer.phone }}</p>
+        <p><strong>मिति:</strong> {{ customer.created_at|date:"Y-m-d" }}</p>
 
         <h3>Items</h3>
         <table class="customer-table">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Medicine</th>
+                    <th>मिति</th>
+                    <th>नाम</th>
                     <th>Quantity</th>
                     <th>Price</th>
-                    <th>Total</th>
-                    <th>Paid Amount</th>
-                    <th>Balance</th>
+                    <th>कुल</th>
+                    <th>देको रकम</th>
+                    <th>बाकी रकम</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td>{{ item.date }}</td>
+                    <td>{{ item.date|date:"Y-m-d" }}</td>
                     <td>{{ item.medicine }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.price }}</td>
@@ -60,13 +60,12 @@
             <!-- Add New Customer Button Aligned to the Right -->
             <button onclick="window.location.href='{% url 'home' %}'" class="add-btn">+ Add New Customer</button>
         </div>
-        
 
         <h3>Total Summary</h3>
         <div class="total-summary">
-            <p>Total Amount: <span>{{ total_amount }}</span></p>
-            <p>Total Paid: <span>{{ total_paid_amount }}</span></p>
-            <p>Remaining Balance: <span>{{ remaining_amount }}</span></p>
+            <p>कुल: <span>{{ total_amount }}</span></p>
+            <p>देको रकम: <span>{{ total_paid_amount }}</span></p>
+            <p>बाकी रकम: <span>{{ remaining_amount }}</span></p>
         </div>
     </div>
 </body>

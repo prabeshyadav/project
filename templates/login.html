@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>Login Form</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/login.css' %}'>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-menu">
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="container">
+            <div class="form-container">
+                {% comment %} <img src="{% static 'images/img4.png' %}" alt="form-logo" class="form-logo"> {% endcomment %}
+                <p class="form-header">Sign in to Invoice</p>
+                <form class="login-form invoice-form d-flex justify-content-center flex-column" method='post'>
+                    {% csrf_token %}
+                    <div class=" login-input input-group flex-nowrap mb-4">
+                        <span class=" input-height input-group-text bg-white" id="addon-wrapping"><i
+                                class="fa-solid fa-user"></i></span>
+                        <input type="text" class=" input-height form-control" placeholder="Username"
+                            aria-label="Username" aria-describedby="addon-wrapping" fdprocessedid="njf8m9" name="username">
+                    </div>
+
+                    <div class=" login-input input-group flex-nowrap mb-4">
+                        <span class=" input-height input-group-text bg-white" id="addon-wrapping"> <i
+                                class="fa-solid fa-lock"></i></span>
+                        <input type="password" class=" input-height form-control" placeholder="Password"
+                            aria-label="password" aria-describedby="addon-wrapping" fdprocessedid="njf8m9" name="password">
+                    </div>
+                    {% for message in messages  %}
+                        {{message}}
+                    {% endfor %}
+                    <button class="btn-login">LOGIN
+                    </button>
+                    <a href="#" class="text-decoration-none"><p class="text-success mt-4">Forgot Password?</p></a>
+                    <span class="help">Problem Signing In?<a href="#" class=" pl-1 text-decoration-none text-success">Get help</a></span>
+                  
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS (optional) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>
