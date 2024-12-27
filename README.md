@@ -1,9 +1,9 @@
-Introduction
+#Introduction
 The Invoice Management System is a web-based application designed to streamline the process of creating, managing, and tracking invoices. Built using the Django framework, the project provides an efficient solution for businesses to handle customer data, item inventories, and financial transactions.
 
 Maintain a database of customers and products, and ensure seamless record-keeping.The project also includes features like dynamic calculations,payment tracking.This application is ideal for small to medium-sized businesses aiming to automate their invoicing process and improve operational efficiency.
 
-Installation
+##Installation
 Install my-project
 
 1.clone the project
