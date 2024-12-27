@@ -38,8 +38,8 @@ on mac/linux
 ```
 4.Set up environment variables:
 ```bash
- Create a .env file and add the necessary environment variables (e.g., SECRET_KEY, DATABASE_URL).
-
+Create a .env file at the same level as settings.py and add the necessary environment variables 
+(e.g., SECRET_KEY=your_secret_key_here, DEBUG=True).
 ```
 5.Set up the database:
 ```bash
@@ -80,13 +80,7 @@ Start the server
 ```
 
 
-## 🛠 Skills
-Javascript, HTML, CSS...&python/Django
 
-
-## Appendix
-
-Any additional information goes here
 
 
 ## Features
@@ -121,9 +115,5 @@ Any additional information goes here
 8.User Authentication (Optional)
 
     Allow multiple users to log in and manage invoices securely
-## Tech Stack
 
-**Client:** HTML&CSS,JS
-
-**Server:** PYTHON/DJANGO
 
