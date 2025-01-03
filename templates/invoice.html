@@ -35,8 +35,8 @@
                 <tr>
                     <th>मिति</th>
                     <th>नाम</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
+                    {% comment %} <th>Quantity</th> {% endcomment %}
+                    {% comment %} <th>Price</th> {% endcomment %}
                     <th>कुल</th>
                     <th>देको रकम</th>
                     <th>बाकी रकम</th>
@@ -47,9 +47,9 @@
                 <tr>
                     <td>{{ item.date|date:"Y-m-d" }}</td>
                     <td>{{ item.medicine }}</td>
-                    <td>{{ item.quantity }}</td>
+                    {% comment %} <td>{{ item.quantity }}</td> {% endcomment %}
                     <td>{{ item.price }}</td>
-                    <td>{{ item.amount }}</td>
+                    {% comment %} <td>{{ item.amount }}</td> {% endcomment %}
                     <td>{{ item.paid_amount }}</td>
                     <td>{{ item.remaining_amount|floatformat:2 }}</td>
                 </tr>

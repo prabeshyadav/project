@@ -1,0 +1,129 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.form-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: green;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table thead {
+    background-color: green;
+    color: white;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+table tbody tr td input {
+    width: 90%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+table tfoot tr td {
+    text-align: right;
+}
+
+table tfoot tr td input {
+    width: 80%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#addRow {
+    background-color: green;
+    color: white;
+    margin-right: 10px;
+}
+
+.btn-submit {
+    background-color: green;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: darkgreen;
+}
+
+@media (max-width: 768px) {
+    table thead {
+        display: none;
+    }
+
+    table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        padding: 8px 5px;
+    }
+
+    table tbody tr td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-align: left;
+    }
+
+    table tbody tr td input {
+        width: 100%;
+    }
+
+    table tfoot tr td {
+        display: block;
+        text-align: left;
+        padding: 10px 5px;
+    }
+
+    table tfoot tr td input {
+        width: 100%;
+    }
+
+    #addRow, .btn-submit {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    #saveorder {
+        text-align: center;
+    }
+}

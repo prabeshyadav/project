@@ -4,262 +4,58 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>create list with User Info</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style1.css' %}">
-    <style>
-        /* General reset */
-        /* General reset */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        /* Container styling */
-        .form-container {
-            margin: 0 auto;
-            width: 80%;
-            padding: 20px;
-            display:none;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        #inputTable {
-            width: 80%;
-            margin: 0  auto;
-            border-collapse: collapse;
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Heading styling */
-        h2 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #28a745;
-            text-align: center;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        table th,
-        table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-        }
-        
-        table th {
-            background-color: #28a745;
-            color: #ffffff;
-            font-weight: bold;
-        }
-        
-        table tbody tr:nth-child(odd) {
-            background-color: #f9f9f9;
-        }
-        
-        table tbody tr:nth-child(even) {
-            background-color: #ffffff;
-        }
-        
-        table input[type="text"],
-        table input[type="number"],
-        table input[type="date"] {
-            width: 90%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            text-align: center;
-            box-sizing: border-box;
-        }
-        
-        /* Read-only inputs */
-        table input[readonly] {
-            background-color: #f4f4f4;
-            color: #555;
-            border: none;
-            font-weight: bold;
-        }
-        
-        /* Add row button styling */
-        #addRow {
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        #addRow:hover {
-            background-color: #218838;
-        }
-        
-        /* Submit button styling */
-        button[type="submit"] {
-            margin-top: 20px;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ffffff;
-            background-color: #28a745;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        button[type="submit"]:hover {
-            background-color: #218838;
-        }
-        
-        /* Error message styling */
-        .alert {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            border: 1px solid #f5c6cb;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        
-        .alert ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .alert ul li {
-            margin: 5px 0;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            h2 {
-                font-size: 18px;
-            }
-        
-            table th,
-            table td {
-                font-size: 10px;
-                padding: 5px;
-            }
-        
-            #addRow,
-            button[type="submit"] {
-                font-size: 10px;
-            }
-        
-            input[type="text"],
-            input[type="number"],
-            input[type="date"] {
-                font-size: 12px;
-                padding: 6px;
-            }
-        }
-
-    </style>
+    <title>Create List with User Info</title>
+    <link rel="stylesheet" href="{% static 'css/userstyle.css' %}">
 </head>
 <body>
-
 <div class="form-container">
-    <!-- User Information Form -->
     <form method="POST" action="{% url 'user_data' id=customer.id %}">
         {% csrf_token %}
-        
-         <!-- Display any form errors -->
-        {% if errors %}
-        <div class="alert alert-danger">
-            <ul>
-                {% for field, error_list in errors.items %}
-                    <li>{{ field }}: {{ error_list|join:", " }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-         
-        
-        
- 
-        
-        <!-- Dynamic Table -->
         <div id="inputTable">
-        <table >
-            <h2>खत वाला
-                {{ customer.username}}</h2>
+            <h2>खत वाला SL YADAV</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>नाम</th>
+                        <th>मूल्य</th>
+                        <th>मिति</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" name="medicine[]" required></td>
+                        <td><input type="number" step="0.01" name="price[]" required oninput="updateTotalAmount()"></td>
+                        <td><input type="date" name="date[]"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>कुल</strong></td>
+                        <td><input type="number" id="totalAmount" readonly></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>देको रकम</strong></td>
+                        <td><input type="number" id="paidAmount" name='paid_amount[]' oninput="updateBalance()"></td>                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>बाकी रकम</strong></td>
+                        <td><input type="number" id="balanceAmount" readonly></td>
+                    </tr>
+                </tfoot>
+            </table>
 
-            <thead>
-                <tr>
-                    <th>SN</th>
-                    <th>नाम</th>
-                    <th>दर
-                    </th>
-                    <th>मूल्य
-                    </th>
-                    <th>कुल</th>
-                    <th>मिति</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <tr>
-                    <td>1</td>
-                    <td><input type="text" name="medicine[]" required></td>
-                    <td><input type="number" name="quantity[]" oninput="calculateTotal(this)" required></td>
-                    <td><input type="number" step="0.01" name="price[]" oninput="calculateTotal(this)" required></td>
-                    <td><input type="number" name="total[]" readonly></td>
-                    <td><input type="date" name="date[]" placeholder="Date"></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4"><strong>कुल</strong></td>
-                    <td><input type="number" id="totalAmount" readonly></td>
-                </tr>
-                <tr>
-                    <td colspan="4"><strong>देको रकम</strong></td>
-                    <td><input type="number" id="paidAmount" name='paid_amount[]' oninput="updateBalance()"></td>
-                </tr>
-                <tr>
-                    <td colspan="4"><strong>बाकी रकम</strong></td>
-                    <td><input type="number" id="balanceAmount" readonly></td>
-                </tr>
-            </tfoot>
-        </table>
-        <button id="addRow" type="button">Add Row</button>
-        <button type="submit" class="btn-submit">Save Order</button>
+            <div>
+                <button id="addRow" type="button">Add Row</button>
+            </div>
+            <div id="saveorder">
+                <button type="submit" class="btn-submit">Save Order</button>
+            </div>
         </div>
-    
-        <!-- Add row button and submit -->
     </form>
 </div>
 
-<!-- Script for handling dynamic rows and calculations -->
-<script src="{% static 'js/main.js' %}"></script>
 <script>
-    let sn = 1;
-    
     document.getElementById('addRow').addEventListener('click', function () {
         const tableBody = document.getElementById('tableBody');
         const rowCount = tableBody.rows.length;
@@ -268,28 +64,16 @@
         newRow.innerHTML = `
             <td>${rowCount + 1}</td>
             <td><input type="text" name="medicine[]" required></td>
-            <td><input type="number" name="quantity[]" oninput="calculateTotal(this)" required></td>
-            <td><input type="number" step="0.01" name="price[]" oninput="calculateTotal(this)" required></td>
-            <td><input type="number" name="total[]" readonly></td>
+            <td><input type="number" step="0.01" name="price[]" required oninput="updateTotalAmount()"></td>
+            <td><input type="date" name="date[]"></td>
         `;
     });
 
-    function calculateTotal(inputElement) {
-        const row = inputElement.closest('tr');
-        const quantity = row.querySelector('input[name="quantity[]"]').value || 0;
-        const price = row.querySelector('input[name="price[]"]').value || 0;
-        const total = row.querySelector('input[name="total[]"]');
-
-        total.value = (quantity * price).toFixed(2);
-
-        updateTotalAmount();
-    }
-
     function updateTotalAmount() {
-        const totalInputs = document.querySelectorAll('input[name="total[]"]');
+        const priceInputs = document.querySelectorAll('input[name="price[]"]');
         let totalSum = 0;
 
-        totalInputs.forEach(input => {
+        priceInputs.forEach(input => {
             totalSum += parseFloat(input.value) || 0;
         });
 

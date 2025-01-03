@@ -48,7 +48,6 @@ def home(request):
         form = UserInfoForm()
 
     return render(request, 'home.html', {'form': form})
-
 @login_required
 def user_data(request, id=None):
     customer = None
@@ -67,12 +66,11 @@ def user_data(request, id=None):
 
     if request.method == 'POST':
         medicines = request.POST.getlist('medicine[]')
-        quantities = request.POST.getlist('quantity[]')
-        prices = request.POST.getlist('price[]')
+        totals = request.POST.getlist('price[]')  # Use price as total
         paid_amounts = request.POST.getlist('paid_amount[]')
         dates = request.POST.getlist('date[]')
 
-        max_length = max(len(medicines), len(quantities), len(prices))
+        max_length = max(len(medicines), len(totals))
         paid_amounts += ['0'] * (max_length - len(paid_amounts))
         dates += [None] * (max_length - len(dates))
 
@@ -81,13 +79,11 @@ def user_data(request, id=None):
             return redirect('user_data')
 
         for i in range(max_length):
-            total = float(quantities[i]) * float(prices[i])
             item_date = dates[i] if dates[i] else None
 
             Item.objects.create(
                 medicine=medicines[i],
-                quantity=quantities[i],
-                price=prices[i],
+                price=totals[i],  # Price is now treated as the total
                 paid_amount=paid_amounts[i],
                 customer_name=customer,
                 date=item_date
@@ -95,6 +91,9 @@ def user_data(request, id=None):
 
         messages.success(request, "Successfully added items for the customer.")
         return redirect('/')
+
+    return render(request, 'user_data.html', {'customer': customer, 'fm': fm, 'item_date': item_date})
+
 
     users = UserInfo.objects.all()
     context = {'forms': fm, 'users': users, 'customer': customer}
@@ -121,25 +120,36 @@ def customer_data(request):
 
     return render(request, 'delete.html', {'page_obj': page_obj, 'search': search_query})
 
+from django.db.models import F, Sum
+
 @login_required
 def invoice(request, customer_id):
-    customer = UserInfo.objects.get(id=customer_id)
-    items = Item.objects.filter(customer_name=customer)
-    
-    for item in items:
-        item.remaining_amount = item.amount - item.paid_amount
-    
-    total_amount = sum(item.amount for item in items)
-    total_paid_amount = sum(item.paid_amount for item in items)
-    remaining_amount = total_amount - total_paid_amount
-    
-    return render(request, 'invoice.html', {
-        'customer': customer,
-        'items': items,
-        'total_amount': total_amount,
-        'total_paid_amount': total_paid_amount,
-        'remaining_amount': remaining_amount
-    })
+    try:
+        # Fetch the customer and their related items
+        customer = UserInfo.objects.get(id=customer_id)
+        items = Item.objects.filter(customer_name=customer)
+        
+        # Add a dynamic field for remaining amount to each item
+        for item in items:
+            item.remaining_amount = item.price - (item.paid_amount or 0)  # Handle cases where paid_amount might be None
+
+        # Calculate totals
+        total_amount = items.aggregate(total=Sum('price'))['total'] or 0
+        total_paid_amount = items.aggregate(total=Sum('paid_amount'))['total'] or 0
+        remaining_amount = total_amount - total_paid_amount
+        
+        # Render the invoice template
+        return render(request, 'invoice.html', {
+            'customer': customer,
+            'items': items,
+            'total_amount': total_amount,
+            'total_paid_amount': total_paid_amount,
+            'remaining_amount': remaining_amount
+        })
+    except UserInfo.DoesNotExist:
+        messages.error(request, "Customer not found.")
+        return redirect('user_list')  #
+
 
 @login_required
 def delete_item(request, item_id):

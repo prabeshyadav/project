@@ -22,9 +22,9 @@ class UserInfo(models.Model):
     @property
     def total_amount(self):
         total = Item.objects.filter(customer_name=self).aggregate(
-            total=Sum(F('quantity') * F('price'))
-        )['total'] 
-        return total or 0 
+            total=Sum('price')
+        )['total']
+        return total or 0
 
     @property
     def total_paid_amount(self):
@@ -41,9 +41,9 @@ class UserInfo(models.Model):
     
 class Item(models.Model):
     medicine = models.CharField(max_length=255)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(null=True,blank=True)
     price = models.IntegerField()
-    paid_amount = models.IntegerField(default=0)
+    paid_amount = models.IntegerField(default=0,null=True,blank=True)
     customer_name=models.ForeignKey(UserInfo, on_delete=models.CASCADE,null=True,related_name='items')
     date = models.DateField(blank=True,null=True)
     
