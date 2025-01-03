@@ -12,7 +12,7 @@
     <form method="POST" action="{% url 'user_data' id=customer.id %}">
         {% csrf_token %}
         <div id="inputTable">
-            <h2>खत वाला SL YADAV</h2>
+            <h2>खत वाला {{ customer.username}}V</h2>
             <table>
                 <thead>
                     <tr>
